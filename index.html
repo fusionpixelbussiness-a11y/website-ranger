@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranger | Official</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+body{background:#050000;color:white;overflow-x:hidden;}
+canvas{position:fixed;top:0;left:0;z-index:-1;}
+
+.cursor{
+  position:fixed;
+  width:200px;height:200px;
+  background:radial-gradient(circle,#ff000055,transparent);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+
+/* Navbar */
+nav{
+  position:fixed;width:100%;
+  display:flex;justify-content:space-between;
+  padding:15px 40px;
+  backdrop-filter:blur(15px);
+  background:rgba(255,0,0,0.05);
+}
+nav h1{color:#ff2e2e;text-shadow:0 0 10px #ff0000;}
+nav a{color:white;margin-left:20px;text-decoration:none;}
+nav a:hover{color:#ff2e2e;}
+
+/* Hero */
+.hero{
+  height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  text-align:center;
+}
+.hero h2{font-size:60px;}
+.hero span{color:#ff2e2e;text-shadow:0 0 20px #ff0000;}
+
+#typing{color:#aaa;margin-top:10px;font-size:22px;}
+
+.btn{
+  margin-top:15px;
+  padding:12px 28px;
+  border:none;border-radius:30px;
+  background:#ff2e2e;color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+.btn:hover{
+  background:#ff0000;
+  box-shadow:0 0 20px #ff0000;
+}
+
+/* Sections */
+section{padding:80px 40px;}
+.title{color:#ff2e2e;margin-bottom:20px;}
+
+.cards{display:flex;flex-wrap:wrap;gap:20px;}
+
+.card{
+  flex:1 1 250px;
+  background:rgba(255,0,0,0.05);
+  backdrop-filter:blur(15px);
+  padding:20px;border-radius:15px;
+  transition:0.3s;
+}
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 0 25px #ff0000;
+}
+
+footer{text-align:center;padding:20px;background:#110000;}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+<div class="cursor" id="cursor"></div>
+
+<!-- Navbar -->
+<nav>
+  <h1>RANGER</h1>
+  <div>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#features">Features</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero" id="home">
+  <h2>Welcome to <span>Ranger</span></h2>
+  <div id="typing"></div>
+
+  <a href="https://youtube.com/@rangerrr01" target="_blank">
+    <button class="btn">Watch on YouTube</button>
+  </a>
+</div>
+
+<!-- About -->
+<section id="about">
+  <h2 class="title">About Ranger</h2>
+  <div class="card">
+    <p>
+      Ranger is a high-quality Minecraft PvP and survival experience.
+      Built with advanced systems, smooth gameplay, and powerful performance.
+      Designed for competitive players and fun gameplay.
+    </p>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <h2 class="title">Features</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>⚔ PvP System</h3>
+      <p>Advanced PvP mechanics and practice modes.</p>
+    </div>
+    <div class="card">
+      <h3>📦 Custom Plugins</h3>
+      <p>Unique features using custom plugin setups.</p>
+    </div>
+    <div class="card">
+      <h3>⚡ Performance</h3>
+      <p>Lag-free gameplay with optimized server.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <h2 class="title">Join Us</h2>
+  <button class="btn" onclick="window.open('https://youtube.com/@rangerrr01')">YouTube</button>
+</section>
+
+<footer>© 2026 Ranger Network</footer>
+
+<script>
+/* Typing */
+const words=["PvP Server","Minecraft Network","Competitive Gameplay"];
+let i=0,j=0,del=false;
+function type(){
+  let w=words[i];
+  document.getElementById("typing").textContent=w.substring(0,j);
+  if(!del && j++===w.length){del=true;setTimeout(type,1000);return;}
+  if(del && j--===0){del=false;i=(i+1)%words.length;}
+  setTimeout(type,del?50:100);
+}
+type();
+
+/* Cursor Glow */
+document.addEventListener("mousemove",e=>{
+  let c=document.getElementById("cursor");
+  c.style.left=e.clientX+"px";
+  c.style.top=e.clientY+"px";
+});
+
+/* Particles */
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<80;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    vx:(Math.random()-0.5),
+    vy:(Math.random()-0.5)
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;
+    p.y+=p.vy;
+
+    if(p.x<0||p.x>canvas.width) p.vx*=-1;
+    if(p.y<0||p.y>canvas.height) p.vy*=-1;
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
+    ctx.fillStyle="#ff2e2e";
+    ctx.fill();
+
+    for(let j=i+1;j<particles.length;j++){
+      let dx=p.x-particles[j].x;
+      let dy=p.y-particles[j].y;
+      let dist=Math.sqrt(dx*dx+dy*dy);
+
+      if(dist<120){
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle="rgba(255,0,0,0.2)";
+        ctx.stroke();
+      }
+    }
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>
